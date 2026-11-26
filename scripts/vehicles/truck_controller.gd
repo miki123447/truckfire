@@ -9,12 +9,15 @@ signal speed_changed(speed_kmh: float)
 @export var acceleration: float = 5.5
 @export var service_brake: float = 13.0
 @export var rolling_resistance: float = 0.65
-@export var steering_rate: float = 0.72
-@export var steering_sensitivity: float = 1.0
-@export var max_steering_speed: float = 0.42
 
-var _longitudinal_speed := 0.0
-var _steering_input := 0.0
+@export_group("Steering")
+@export var steering_rate: float = 1.8
+@export var wheelbase: float = 4.2
+@export var max_steering_angle: float = 0.48
+@export_range(0.1, 1.0) var high_speed_steering_factor: float = 0.40
+
+var _longitudinal_speed: float = 0.0
+var _steering_input: float = 0.0
 var _spawn_transform: Transform3D
 
 func _ready() -> void:
@@ -29,31 +32,53 @@ func _physics_process(delta: float) -> void:
 	speed_changed.emit(absf(_longitudinal_speed) * 3.6)
 
 func _read_driver_inputs(delta: float) -> void:
-	var throttle := Input.get_action_strength("accelerate")
-	var braking := Input.get_action_strength("brake")
-	var reversing := Input.is_action_pressed("reverse")
-	var target_speed := max_reverse_speed if reversing else max_forward_speed
-	var drive_direction := -1.0 if reversing else 1.0
+	var throttle: float = Input.get_action_strength("accelerate")
+	var braking: float = Input.get_action_strength("brake")
+	var reversing: bool = Input.is_action_pressed("reverse")
+	var target_speed: float = max_reverse_speed if reversing else max_forward_speed
+	var drive_direction: float = -1.0 if reversing else 1.0
 
 	if throttle > 0.0:
-		_longitudinal_speed = move_toward(_longitudinal_speed, target_speed * drive_direction, acceleration * throttle * delta)
+		_longitudinal_speed = move_toward(
+			_longitudinal_speed,
+			target_speed * drive_direction,
+			acceleration * throttle * delta
+		)
 	elif braking > 0.0:
-		_longitudinal_speed = move_toward(_longitudinal_speed, 0.0, service_brake * braking * delta)
+		_longitudinal_speed = move_toward(
+			_longitudinal_speed, 0.0, service_brake * braking * delta
+		)
 	else:
-		_longitudinal_speed = move_toward(_longitudinal_speed, 0.0, rolling_resistance * delta)
+		_longitudinal_speed = move_toward(
+			_longitudinal_speed, 0.0, rolling_resistance * delta
+		)
 
-	var steer_axis := Input.get_axis("steer_left", "steer_right")
+	var steer_axis: float = Input.get_axis("steer_left", "steer_right")
 	_steering_input = move_toward(_steering_input, steer_axis, steering_rate * delta)
 
 func _apply_vehicle_motion(delta: float) -> void:
-	var speed_ratio := clampf(absf(_longitudinal_speed) / max_forward_speed, 0.0, 1.0)
-	var steer_factor := lerpf(1.0, max_steering_speed, speed_ratio)
-	var direction_factor := -1.0 if _longitudinal_speed < -0.1 else 1.0
-	rotate_y(-_steering_input * steering_sensitivity * steer_factor * direction_factor * delta)
+	# Modelo cinemático tipo bicicleta: el giro depende de la dirección,
+	# la distancia entre ejes y la velocidad longitudinal del camión.
+	var speed_ratio: float = clampf(
+		absf(_longitudinal_speed) / max_forward_speed, 0.0, 1.0
+	)
+	var steering_factor: float = lerpf(
+		1.0, high_speed_steering_factor, speed_ratio
+	)
+	# Input.get_axis devuelve negativo al girar a la izquierda.
+	# Con el eje frontal local -Z, un ángulo positivo gira hacia la izquierda.
+	var steering_angle: float = -_steering_input * max_steering_angle * steering_factor
 
-	var forward := -global_transform.basis.z
+	if absf(_longitudinal_speed) > 0.01 and wheelbase > 0.01:
+		var yaw_rate: float = (
+			_longitudinal_speed * tan(steering_angle) / wheelbase
+		)
+		rotate_y(yaw_rate * delta)
+
+	var forward: Vector3 = -global_transform.basis.z
 	velocity.x = forward.x * _longitudinal_speed
 	velocity.z = forward.z * _longitudinal_speed
+
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
 	else:
