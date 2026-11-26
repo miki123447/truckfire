@@ -17,5 +17,5 @@ shape = SubResource("BoxShape3D_truck")
 position = Vector3(0, 0, 0)
 
 [node name="MercedesTruck" parent="ModelPivot" instance=ExtResource("2_mercedes")]
-position = Vector3(14.60084, 5.07873, -0.2988)
+position = Vector3(0, 0, 0)
 scale = Vector3(0.5, 0.5, 0.5)
