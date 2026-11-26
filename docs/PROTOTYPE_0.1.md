@@ -7,6 +7,10 @@
 - Procedural 520 m test road, natural rolling terrain, road markings and metal guardrails.
 - Basic keyboard driving, follow camera, cockpit camera and speed HUD.
 
+## Start
+- Extract the complete ZIP into a folder.
+- Double-click `INICIAR_TRUCKFIRE.bat` (requires Godot 4.7 for Windows). The first launch imports the project assets before starting the game.
+
 ## Controls
 - W / Up: accelerate
 - S / Down: brake
@@ -19,4 +23,4 @@
 ## Notes
 This is an initial playable driving prototype, not a finished vehicle simulation. The current controller is a simplified longitudinal/steering model. Suspension, wheel-by-wheel physics, gearbox, traffic, delivery gameplay, and a detailed roadside asset library are planned for later iterations.
 
-The model's GLB has embedded image textures. The separate texture archive is retained in the source upload but is not required by this prototype. The asphalt gloss map is inverted to generate a roughness map for Godot's StandardMaterial3D workflow.
+The model's GLB contains the truck geometry and materials. The asphalt uses the supplied color, normal and AO maps with fixed roughness.
