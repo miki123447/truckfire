@@ -3,7 +3,7 @@
 ## Included
 - Godot 4.7 project using Forward Plus and Jolt Physics.
 - Imported Mercedes truck model (assets/models/mercedes_truck.glb).
-- Asphalt PBR maps supplied for CityStreetAsphaltGenericClean001.
+- Asphalt color, normal and AO maps supplied for CityStreetAsphaltGenericClean001; the material uses a fixed roughness value.
 - Procedural 520 m test road, natural rolling terrain, road markings and metal guardrails.
 - Basic keyboard driving, follow camera, cockpit camera and speed HUD.
 

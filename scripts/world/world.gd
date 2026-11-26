@@ -134,7 +134,6 @@ func _make_asphalt_material() -> StandardMaterial3D:
 	material.normal_texture = load(ASPHALT_DIR + "CityStreetAsphaltGenericClean001_NRM_2K.jpg")
 	material.ao_enabled = true
 	material.ao_texture = load(ASPHALT_DIR + "CityStreetAsphaltGenericClean001_AO_2K.jpg")
-	material.roughness_texture = load(ASPHALT_DIR + "CityStreetAsphaltGenericClean001_ROUGHNESS_2K.png")
 	material.roughness = 0.92
 	material.metallic = 0.0
 	material.uv1_scale = Vector3(1.4, 48.0, 1.0)
