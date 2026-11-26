@@ -2,9 +2,9 @@
 
 ## Included
 - Godot 4.7 project using Forward Plus and Jolt Physics.
-- Imported Mercedes truck model (assets/models/mercedes_truck.glb).
+- Imported Mercedes truck model, centered on the vehicle origin.
 - Asphalt color, normal and AO maps supplied for CityStreetAsphaltGenericClean001; the material uses a fixed roughness value.
-- Procedural 520 m test road, natural rolling terrain, road markings and metal guardrails.
+- Procedural 520 m test road, rolling terrain with static collision, road markings and metal guardrails.
 - Basic keyboard driving, follow camera, cockpit camera and speed HUD.
 
 ## Start
@@ -23,4 +23,4 @@
 ## Notes
 This is an initial playable driving prototype, not a finished vehicle simulation. The current controller is a simplified longitudinal/steering model. Suspension, wheel-by-wheel physics, gearbox, traffic, delivery gameplay, and a detailed roadside asset library are planned for later iterations.
 
-The model's GLB contains the truck geometry and materials. The asphalt uses the supplied color, normal and AO maps with fixed roughness.
+The asphalt uses the supplied color, normal and AO maps with fixed roughness. The terrain collision allows the truck to remain supported if it leaves the asphalt.
