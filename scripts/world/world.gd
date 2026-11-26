@@ -20,7 +20,7 @@ func _ready() -> void:
 	_build_guardrails()
 	_spawn_truck()
 	_build_hud()
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _process(_delta: float) -> void:
 	if truck == null:
@@ -76,7 +76,8 @@ func _build_terrain() -> void:
 			var x := -x_span * 0.5 + x_span * float(x_i) / x_steps
 			var distance_from_road := absf(x)
 			var hill := noise.get_noise_2d(x, z) * 5.5
-			var verge_blend := smoothstep(8.0, 30.0, distance_from_road)
+			var verge_t := clampf(inverse_lerp(8.0, 30.0, distance_from_road), 0.0, 1.0)
+			var verge_blend := verge_t * verge_t * (3.0 - 2.0 * verge_t)
 			var height := hill * verge_blend - 0.12
 			var shade := 0.88 + noise.get_noise_2d(x * 2.2, z * 2.2) * 0.08
 			surface.set_color(Color(0.24 * shade, 0.31 * shade, 0.19 * shade, 1.0))
@@ -95,7 +96,16 @@ func _build_terrain() -> void:
 	terrain_material.vertex_color_use_as_albedo = true
 	terrain_material.roughness = 1.0
 	terrain_mesh.surface_set_material(0, terrain_material)
+
+	var terrain_body := StaticBody3D.new()
+	terrain_body.name = "TerrainCollision"
+	var terrain_collision := CollisionShape3D.new()
+	terrain_collision.shape = terrain_mesh.create_trimesh_shape()
+	terrain_body.add_child(terrain_collision)
+	add_child(terrain_body)
+
 	var terrain := MeshInstance3D.new()
+	terrain.name = "TerrainVisual"
 	terrain.mesh = terrain_mesh
 	terrain.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(terrain)
@@ -262,7 +272,7 @@ func _build_hud() -> void:
 	gear_label.add_theme_color_override("font_color", Color(0.95, 0.72, 0.34))
 	column.add_child(gear_label)
 	var controls := Label.new()
-	controls.text = "W/S Accelerar i frenar   A/D Girar\nR Marxa enrere   C Canviar càmera   F Recol·locar"
+	controls.text = "W/S Accelerar i frenar   A/D Girar\nR Marcha atrás   C Cambiar cámara   F Recolocar"
 	controls.add_theme_font_size_override("font_size", 10)
 	controls.add_theme_color_override("font_color", Color(0.72, 0.78, 0.80))
 	column.add_child(controls)
