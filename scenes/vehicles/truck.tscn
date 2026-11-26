@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/vehicles/truck_controller.gd" id="1_controller"]
+[ext_resource type="PackedScene" path="res://assets/models/mercedes_truck.glb" id="2_mercedes"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_truck"]
+size = Vector3(2.35, 2.55, 5.3)
+
+[node name="Truck" type="CharacterBody3D"]
+script = ExtResource("1_controller")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.275, 0)
+shape = SubResource("BoxShape3D_truck")
+
+[node name="ModelPivot" type="Node3D" parent="."]
+position = Vector3(0, 0, 0)
+
+[node name="MercedesTruck" parent="ModelPivot" instance=ExtResource("2_mercedes")]
+position = Vector3(14.60084, 5.07873, -0.2988)
+scale = Vector3(0.5, 0.5, 0.5)
