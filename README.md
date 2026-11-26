@@ -8,4 +8,4 @@ Extract the complete project ZIP and double-click `INICIAR_TRUCKFIRE.bat`. The l
 The complete local project package includes the Mercedes GLB, CityStreetAsphaltGenericClean001 PBR maps, and guardrail source assets. Binary source assets are distributed in the project ZIP rather than duplicated in this source-only branch.
 
 ## Notes
-The asphalt material uses the supplied color, normal and ambient-occlusion maps, with a fixed roughness value so the project does not depend on a missing roughness image.
+The asphalt material uses the supplied color, normal and ambient-occlusion maps, with a fixed roughness value so the project does not depend on a missing roughness image. The procedural roadside terrain has static collision, and the Mercedes model is aligned to the vehicle's physics origin.
